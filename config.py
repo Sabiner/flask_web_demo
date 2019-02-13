@@ -10,7 +10,7 @@ class Config:
     FLASKY_MAIL_SUBJECT_PREFIX = '[Sabiner]'       # 邮件标题
     FLASKY_MAIL_SENDER = 'Sabiner Admin <2267313059@qq.com>'
     FLASKY_ADMIN = 'sabiner.ge@gmail.com'
-    FLASKY_POSTS_PER_PAGE = 1
+    FLASKY_POSTS_PER_PAGE = 10
     FLASKY_COMMENTS_PER_PAGE = 8
 
     @staticmethod
