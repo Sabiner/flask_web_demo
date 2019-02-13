@@ -9,9 +9,11 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, request
 from markdown import markdown
 import bleach
+from flask import url_for
 
 from . import db
 from . import login_manager
+from app.exception import ValidationError
 
 
 @login_manager.user_loader
@@ -218,6 +220,39 @@ class User(UserMixin, db.Model):
                 db.session.add(user)
                 db.session.commit()
 
+    def generate_auth_token(self, expiration):
+        """
+        generate_confirmation_token函数生成的令牌的作用是：
+            发送给用户一个确认邮件，令牌密保了ID加在URL后面，用户确认后修改数据库中confirm字段的值为True
+        而这个令牌的作用是：
+            客户端每次API访问，都要用这里生成的令牌来认证是否可访问
+        :param expiration: 
+        :return: 
+        """
+        s = Serializer(current_app.config['SECRET_KEY'], expiration)
+        return s.dumps({'id', self.id})
+
+    @staticmethod
+    def verify_auth_token(token):
+        s = Serializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except:
+            return None
+        return User.query.get(data['id'])
+
+    def to_json(self):
+        json_user = {
+            'url': url_for('api.get_user', id=self.id, _external=True),
+            'username': self.username,
+            'member_since': self.member_since,
+            'last_seen': self.last_seen,
+            'posts': url_for('api.get_user_posts', id=self.id, _external=True),
+            'followed_posts': url_for('api.get_user_followed_posts', id=self.id, _external=True),
+            'post_count': self.posts.count()
+        }
+        return json_user
+
 
 class Post(db.Model):
     __tablename__ = 'posts'
@@ -251,6 +286,29 @@ class Post(db.Model):
                         'h1', 'h2', 'h3', 'h4', 'p']
         target.body_html = bleach.linkify(
             bleach.clean(markdown(value, output_format='html'), tags=allowed_tags, strip=True))
+
+    def to_json(self):
+        """
+        资源到JSON的转换
+        :return: rest json数据
+        """
+        json_post = {
+            'url': url_for('api.get_post', id=self.id, _external=True),
+            'body': self.body,
+            'body_html': self.body_html,
+            'timestamp': self.timestamp,
+            'author': url_for('api.get_user', id=self.author_id, _external=True),
+            'comments': url_for('api.get_post_comments', id=self.id, _external=True),
+            'comments_count': self.comments.count()
+        }
+        return json_post
+
+    @staticmethod
+    def from_json(json_post):
+        body = json_post.get('body')
+        if body is None or body == '':
+            raise ValidationError('post dose not have a body.')
+        return Post(body=body)
 
 
 class AnonymousUser(AnonymousUserMixin):

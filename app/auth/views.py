@@ -54,11 +54,6 @@ def secret():
 def register():
     form = forms.RegisterForm()
     if form.validate_on_submit():
-        print '-' * 40
-        print form.email.data
-        print form.username.data
-        print form.password.data
-        print '-' * 40
         user = User(email=form.email.data, username=form.username.data, password=form.password.data)
         db.session.add(user)
         db.session.commit()
