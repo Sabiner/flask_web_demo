@@ -230,7 +230,7 @@ class User(UserMixin, db.Model):
         :return: 
         """
         s = Serializer(current_app.config['SECRET_KEY'], expiration)
-        return s.dumps({'id', self.id})
+        return s.dumps({'id': self.id})
 
     @staticmethod
     def verify_auth_token(token):
