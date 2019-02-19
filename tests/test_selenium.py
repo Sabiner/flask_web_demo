@@ -64,17 +64,17 @@ class SeleniumTestCase(unittest.TestCase):
     def test_admin_home_page(self):
         # 进入首页
         self.client.get('http://localhost:5000/')
-        self.assertTrue(re.search(r'Welcome,\s+Stranger!', self.client.page_source))
+        self.assertTrue(re.search(r'Welcome,\s+Stranger', self.client.page_source))
 
         # 进入登录页
-        self.client.find_element_by_link_text('Log In').click()
+        self.client.find_element_by_link_text('Sign In').click()
         self.assertTrue('<h1>Login</h1>' in self.client.page_source)
 
         # 登陆
         self.client.find_element_by_name('email').send_keys('john@example.com')
         self.client.find_element_by_name('password').send_keys('123')
         self.client.find_element_by_name('submit').click()
-        self.assertTrue(re.search(r'Welcome,\s+john!', self.client.page_source))
+        self.assertTrue(re.search(r'Welcome,\s+john', self.client.page_source))
 
         # 进入用户个人资源页面
         self.client.find_element_by_link_text('Profile').click()

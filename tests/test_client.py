@@ -27,34 +27,33 @@ class FlaskClientTestCase(unittest.TestCase):
 
     def test_register_and_login(self):
         email = 'john@example.com'
-        username = 'Aaaaaaaaaa'
+        username = 'john'
         # 注册新用户
-        response = self.client.get(url_for('auth.register'), data={
+        response = self.client.post('/auth/register', data={
             'email': email,
             'username': username,
             'password': '123',
             'password2': '123'
         })
-        print response.status_code
-        self.assertTrue(response.status_code == 200)
+        self.assertTrue(response.status_code == 302)
 
         # 使用新注册用户登陆
-        response = self.client.get(url_for('auth.login', data={
+        response = self.client.post('/auth/login', data={
             'email': email,
             'password': '123'
-        }))
+        }, follow_redirects=True)
         data = response.get_data(as_text=True)
-        self.assertTrue(re.search('Welcome,\s+Aaaaaaaaaa', data))
+        self.assertTrue(re.search(r'Hello,\s+john', data))
         self.assertTrue('You have not confirmed your account yet.' in data)
 
         # 发送确认令牌
         user = User.query.filter_by(email=email).first()
         token = user.generate_confirmation_token()
-        response = self.client.get(url_for('auth.confirm', token=token), follow_redirects=True)
+        response = self.client.get('/auth/confirm/%s' % token, follow_redirects=True)
         data = response.get_data(as_text=True)
         self.assertTrue('You have confirmed your account' in data)
 
         # 登出
-        response = self.client.get(url_for('auth.logout'), follow_redirects=True)
+        response = self.client.get('/auth/logout', follow_redirects=True)
         data = response.get_data(as_text=True)
         self.assertTrue('You have been logged out' in data)
