@@ -7,5 +7,5 @@ variables:
 include:
     project: 'devops/ci-templates'
     file:
-        - '/aliyun/gitlab-ci-template.yml'
+        - '/maven/gitlab-ci-template.yml'
     ref: master
