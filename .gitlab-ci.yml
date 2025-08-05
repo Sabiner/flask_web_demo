@@ -1,11 +1,11 @@
 variables:
     APP_NAME: 'devops-simple-test'
-    APP_VERSION: 'master-46e31069-2502211445-151211'
+    APP_VERSION: '1.0.0'
     APP_OWNER_EMAIL: 'chaoyuege@sohu-inc.com'
     MANUAL_REVIEW: 'false'
 
 include:
     project: 'devops/ci-templates'
     file:
-        - '/maven/gitlab-ci-template.yml'
+        - '/aliyun/gitlab-ci-template.yml'
     ref: master
