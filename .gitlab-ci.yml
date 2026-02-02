@@ -5,7 +5,7 @@ variables:
     MANUAL_REVIEW: 'false'
 
 include:
-    project: 'devops/ci-templates'
+    project: 'devops/ci-template-test'
     file:
         - '/maven/gitlab-ci-template.yml'
     ref: master
