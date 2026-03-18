@@ -1,4 +1,3 @@
-# 项目介绍
-用于DevOps平台日常测试使用的项目
+# flask_web_demo
 
-AI应用：基于 AutoGLM 构建的手机端智能助理框架，它能够以多模态方式理解手机屏幕内容，并通过自动化操作帮助用户完成任务
+学习Miguel Grinberg的《Flask Web开发》时，同步实践的代码
