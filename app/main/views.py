@@ -41,7 +41,6 @@ def form_validate():
 
 @main.route('/user/<username>')
 def user(username):
-    print "这是来自gitlab的测试"
     user = User.query.filter_by(username=username).first()
     if not user:
         abort(404)
