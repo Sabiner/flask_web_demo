@@ -19,6 +19,7 @@ class APITestCase(unittest.TestCase):
         self.client = self.app.test_client()
 
     def tearDown(self):
+        print "来自OS分支的测试第二次"
         db.session.remove()
         db.drop_all()
         self.app_context.pop()
